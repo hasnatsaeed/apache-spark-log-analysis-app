@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.log.analysis.model.LogAnalysisResultModel;
 import com.log.analysis.model.LogLineModel;
 import com.log.analysis.model.ServerEnpointAccessCountModel;
+import com.log.analysis.model.ClientAccessCountModel;
 import com.log.analysis.model.HttpResponseCodeCountModel;
 
 import java.io.File;
@@ -43,10 +44,24 @@ public class ApacheAccessLogAnalyzerUsingSparkSQL {
 		analyzeHttpResponseCodes(spark, analysisResults);
 
 		analyzeTopServerEnpointsAccessed(spark, analysisResults);
+		
+		analyzeTopClientsAccessed(spark,analysisResults);
 
 		writeToFile(analysisResults);
 
 		spark.stop();
+	}
+
+	private static void analyzeTopClientsAccessed(SparkSession spark, LogAnalysisResultModel logAnalysisResult) {
+		Dataset<Row> results = spark
+				.sql("SELECT clientName, COUNT(*) AS total FROM logs GROUP BY clientName ORDER BY total desc LIMIT 100");
+
+		Dataset<ClientAccessCountModel> clientAccessCountAnalysis = results.map(
+				row -> new ClientAccessCountModel(row.getString(0), row.getLong(1)),
+				Encoders.bean(ClientAccessCountModel.class));
+
+		logAnalysisResult.setClientAccessCountAnalysis(clientAccessCountAnalysis.collectAsList());
+		
 	}
 
 	private static void analyzeTopServerEnpointsAccessed(SparkSession spark, LogAnalysisResultModel logAnalysisResult) {
@@ -121,7 +136,7 @@ public class ApacheAccessLogAnalyzerUsingSparkSQL {
 			LogLineModel logLine = LogLineModel.parseFromLogLine(record);
 			return RowFactory.create(logLine.getClientIpAddress(), logLine.getClientId(), logLine.getUserId(),
 					logLine.getDateTime(), logLine.getHttpMethod(), logLine.getServerEndpoint(),
-					logLine.getHttpProtocol(), logLine.getHttpResponseCode(), logLine.getHttpContentSize());
+					logLine.getHttpProtocol(), logLine.getHttpResponseCode(), logLine.getHttpContentSize(),logLine.getClientName());
 		});
 	}
 

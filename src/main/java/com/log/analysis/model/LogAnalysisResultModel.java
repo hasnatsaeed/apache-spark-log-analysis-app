@@ -10,6 +10,8 @@ public class LogAnalysisResultModel implements Serializable {
 	private List<HttpResponseCodeCountModel> httpResponseCodeCountAnalysis;
 	
 	private List<ServerEnpointAccessCountModel> serverEndpointAccessCountAnalysis;
+	
+	private List<ClientAccessCountModel> clientAccessCountAnalysis;
 
 
 	public List<HttpResponseCodeCountModel> getHttpResponseCodeCountAnalysis() {
@@ -28,8 +30,14 @@ public class LogAnalysisResultModel implements Serializable {
 			List<ServerEnpointAccessCountModel> serverEndpointAccessCountAnalysis) {
 		this.serverEndpointAccessCountAnalysis = serverEndpointAccessCountAnalysis;
 	}
-	
-	
+
+	public List<ClientAccessCountModel> getClientAccessCountAnalysis() {
+		return clientAccessCountAnalysis;
+	}
+
+	public void setClientAccessCountAnalysis(List<ClientAccessCountModel> clientAccessCountAnalysis) {
+		this.clientAccessCountAnalysis = clientAccessCountAnalysis;
+	}
 	
 
 }
