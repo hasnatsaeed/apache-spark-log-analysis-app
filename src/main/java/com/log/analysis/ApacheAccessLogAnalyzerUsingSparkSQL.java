@@ -1,9 +1,6 @@
 package com.log.analysis;
 
-import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
-import org.apache.spark.api.java.JavaSparkContext;
-import org.apache.spark.api.java.function.MapFunction;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Encoders;
 import org.apache.spark.sql.Row;
@@ -22,11 +19,7 @@ import com.log.analysis.model.LogLineModel;
 import com.log.analysis.model.ServerEnpointAccessCountModel;
 import com.log.analysis.model.HttpResponseCodeCountModel;
 
-import io.netty.handler.codec.http2.Http2FrameReader.Configuration;
-import scala.Tuple2;
-
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
